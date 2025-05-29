@@ -68,17 +68,6 @@ public class ProductosService {
             }
         }
 
-        // Validar que el costo de compra y precio de venta cumplan con el margen del 25%
-        if (producto.getCostoCompra() != null) {
-            BigDecimal precioVentaCalculado = producto.getCostoCompra().multiply(MARGEN_VENTA).setScale(2, RoundingMode.HALF_UP);
-            if (producto.getPrecioVenta().compareTo(precioVentaCalculado) != 0) {
-                throw new IllegalArgumentException(
-                    String.format("El precio de venta debe ser exactamente el 25%% más que el costo de compra. " +
-                                "Costo de compra: %s, Precio de venta esperado: %s, Precio de venta proporcionado: %s",
-                                producto.getCostoCompra(), precioVentaCalculado, producto.getPrecioVenta()));
-            }
-        }
-
         return this.repository.save(producto);
     }
 
@@ -95,14 +84,7 @@ public class ProductosService {
         if (producto.getPrecioVenta() != null && producto.getPrecioVenta().doubleValue() > 0) {
             productoExistente.setPrecioVenta(producto.getPrecioVenta());
         }
-        if (producto.getCostoCompra() != null) {
-            BigDecimal precioVentaCalculado = producto.getCostoCompra().multiply(MARGEN_VENTA).setScale(2, RoundingMode.HALF_UP);
-            if (productoExistente.getPrecioVenta().compareTo(precioVentaCalculado) != 0) {
-                throw new IllegalArgumentException(
-                    String.format("El precio de venta debe ser exactamente el 25%% más que el costo de compra. " +
-                                "Costo de compra: %s, Precio de venta esperado: %s, Precio de venta actual: %s",
-                                producto.getCostoCompra(), precioVentaCalculado, productoExistente.getPrecioVenta()));
-            }
+        if (producto.getCostoCompra() != null && producto.getCostoCompra().doubleValue() > 0) {
             productoExistente.setCostoCompra(producto.getCostoCompra());
         }
         if (producto.getStockActual() != null && producto.getStockActual() >= 0) {
